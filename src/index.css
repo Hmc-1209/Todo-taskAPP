@@ -1,8 +1,70 @@
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
 
-
+/* Styles for base components */
 * {
   background-color: #8294C4;
   margin: 0;
   font-family: "Quicksand";
+}
+
+nav {
+  width: 100%;
+  display: flex;
+  color:#FFEAD2;
+  padding: 0;
+  margin-bottom: 1%;
+  align-items: center;
+  border-radius: 10px;
+}
+
+input:focus {
+  outline:none;
+}
+
+.navLink {
+  font-weight: bold;
+  color:#a9b0c5;
+  padding-right:5%; 
+  font-size: 1.5vw;
+  text-decoration: none;
+}
+.active {
+  color:#FFEAD2;
+}
+
+.searchBar {
+  text-overflow: ellipsis;
+  transition:all .2s ease-out;
+  outline: none;
+  border:none;
+  width:10%;
+  height:4vh;
+  background-color: #FFEAD2;
+  border-radius: 10vw;
+  margin-right:1%;
+  padding-left: 1%;
+}
+.searchBar:focus {
+  transition:all .2s ease-out;
+  width:15%;
+}
+
+.sidebarL {
+  width:20vw;
+  font-size: 1.5vw;
+  padding:2% 0 2% 0%;
+  margin: 0 5% 0 0;
+  align-items: center;
+  display: inline-block;
+  border-radius: 1vw;
+  font-weight: bold;
+  overflow: hidden;
+}
+.repo {
+  width:70%; 
+  padding: 8%;
+  margin:5%;
+  font-size: 2vh;
+  border-radius: 1vw;
+  background-color: #a9b0c5;
 }
