@@ -1,9 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 /* Components */
-import Contents from "./components/contents";
-import Tags from "./components/tags";
-import Layout from "./components/layout";
+import Contents from "./components/Contents";
+import Tags from "./components/Tag";
+import Layout from "./components/Layout";
 
 function App() {
   return (
