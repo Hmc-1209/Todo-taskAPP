@@ -1,7 +1,18 @@
-import React from "react";
+import React, { useContext } from "react";
+
+// Context
+import { AppContext } from "./Layout";
 
 const Contents = () => {
-  return <h1>Contents</h1>;
+  const { tasks } = useContext(AppContext);
+
+  return (
+    <div className="contents">
+      {tasks.map((task) => (
+        <div className="task"> {task} </div>
+      ))}
+    </div>
+  );
 };
 
 export default Contents;
