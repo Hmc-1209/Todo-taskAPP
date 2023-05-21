@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Contents from "./components/Contents";
 import Tags from "./components/Tag";
 import Layout from "./components/Layout";
+import Home from "./components/Home";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Routes>
           {/* Routes */}
           <Route path="/" element={<Layout />}>
+            <Route index element={<Home />}></Route>
             <Route path="contents" element={<Contents />} />
             <Route path="tags" element={<Tags />} />
           </Route>

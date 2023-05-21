@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 
 // Context
 import { AppContext } from "./Layout";
@@ -7,24 +7,74 @@ const Repositories = () => {
   const { repos, setRepos, selectedRepo, setSelectedRepo } =
     useContext(AppContext);
 
+  // Get the repo name for new repo, find the empty index
+  const repo_name = () => {
+    let index = 1,
+      i = 0;
+    while (true) {
+      if (i === repos.length) {
+        break;
+      }
+      if (repos[i] === "Repo" + index) {
+        // console.log("repo name already exist " + index);
+        i = 0;
+        index++;
+      } else {
+        console.log("next index");
+        i++;
+      }
+    }
+    console.log("Repo" + index);
+    return "Repo" + index;
+  };
+
   // Add a repository
   const addRepo = () => {
-    setRepos(repos.concat("Repo" + (repos.length + 1)));
+    const new_repo = repo_name();
+    const data = repos.concat(new_repo);
+    setRepos(data);
+    // Update tasks
+    let taskData = JSON.parse(window.localStorage.getItem("tasks"));
+    window.localStorage.setItem(
+      "tasks",
+      JSON.stringify(
+        taskData.concat({
+          repoName: new_repo,
+          tasks: [
+            {
+              taskName: "task1",
+              due: Date(),
+              tags: "",
+              notes: "",
+              status: "unfinished",
+            },
+          ],
+        })
+      )
+    );
   };
+  useEffect(() => {
+    window.localStorage.setItem("repos", JSON.stringify(repos));
+  }, [repos]);
+
   // Check if the repository has been selected
   const repoClass = (repo) => {
     return repo === selectedRepo ? "repo selectedRepo" : "repo";
   };
+
   // Set the selected repository
   const selectRepo = (repo) => {
-    console.log(repo.target.outerText);
     setSelectedRepo(repo.target.outerText.split(" ")[0]);
   };
 
   return (
     <>
       {repos.map((repo) => (
-        <div className={repoClass(repo)} onClick={(repo) => selectRepo(repo)}>
+        <div
+          className={repoClass(repo)}
+          onClick={(repo) => selectRepo(repo)}
+          key={repo}
+        >
           {repo}
         </div>
       ))}

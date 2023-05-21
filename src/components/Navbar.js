@@ -27,12 +27,7 @@ const Navbar = () => {
         Tags
       </NavLink>
 
-      <input
-        class="btn"
-        type="text"
-        className="searchBar"
-        placeholder="Search task"
-      />
+      <input type="text" className="btn searchBar" placeholder="Search task" />
     </nav>
   );
 };
