@@ -1,49 +1,85 @@
 import React, { useContext } from "react";
+import { FaTrash, FaPencilAlt } from "react-icons/fa";
 
 // Context
 import { AppContext } from "./Layout";
+import { deleteRepo } from "./function/localStorageCRUD";
 
 const Contents = () => {
-  let { tasks, repos, selectedRepo, setSelectedRepo } = useContext(AppContext);
+  let {
+    tasks,
+    repos,
+    selectedRepo,
+    setSelectedRepo,
+    setEditing,
+    editingItem,
+    setEditingItem,
+    setEditingType,
+  } = useContext(AppContext);
 
   // On delete particular repo
   const delRepo = () => {
     if (repos.length !== 1) {
-      let taskData = window.localStorage.getItem("tasks");
-      taskData = taskData
-        ? JSON.parse(taskData).filter(
-            (element) => element.repoName !== selectedRepo
-          )
-        : [];
-      let repoData = window.localStorage.getItem("repos");
-      repoData = repoData
-        ? JSON.parse(repoData).filter((element) => element !== selectedRepo)
-        : [];
-      window.localStorage.setItem("tasks", JSON.stringify(taskData));
-      window.localStorage.setItem("repos", JSON.stringify(repoData));
-      setSelectedRepo(JSON.parse(window.localStorage.getItem("repos"))[0]);
+      const selectedIndex = deleteRepo(selectedRepo);
+      // Select the base repo if no repos left, else if deleting the first repo, select the second, else if deleting the only repo, select the base one
+      setSelectedRepo(
+        selectedRepo === repos[1]
+          ? repos.length === 2
+            ? JSON.parse(window.localStorage.getItem("repos"))[0]
+            : JSON.parse(window.localStorage.getItem("repos"))[1]
+          : JSON.parse(window.localStorage.getItem("repos"))[selectedIndex - 1]
+      );
     }
+  };
+
+  const selectElement_repos = (name) => {
+    setEditing(1);
+    setEditingItem(name);
+    setEditingType("repos");
   };
 
   return (
     <div className="contents">
-      {/* Title */}
-      <div className="repoName">-- {selectedRepo} --</div>
-      {/* Tasks */}
-      {tasks.map((task) => (
-        <div className="task" key={task.taskName}>
-          {task.taskName}
-          <br />
-          {task.due}
-        </div>
-      ))}
-      {/* Bottom */}
-      {repos.length !== 1 && (
-        <div className="contentBottom">
-          <button className="deleteBtn" onClick={delRepo}>
-            Del
-          </button>
-        </div>
+      {console.log()}
+      {selectedRepo !== "BaseRepo" && (
+        <>
+          {/* Title */}
+          {editingItem !== selectedRepo ? (
+            <div
+              className="repoName"
+              onClick={() => selectElement_repos(selectedRepo)}
+            >
+              {selectedRepo}
+            </div>
+          ) : (
+            <input
+              className="repoRename"
+              autoFocus={true}
+              placeholder={selectedRepo}
+              id={"selectedItem"}
+            />
+          )}
+
+          {/* Tasks */}
+          {tasks.map((task) => (
+            <div className="task" key={task.taskName}>
+              {task.taskName}
+              <br />
+              {task.due}
+            </div>
+          ))}
+
+          {/* Bottom */}
+          <div className="contentBottom">
+            <button className="addTaskBtn">+</button>
+            <FaPencilAlt className="icon" />
+            {repos.length !== 1 && (
+              <button className="deleteBtn" onClick={delRepo}>
+                <FaTrash className="icon" />
+              </button>
+            )}
+          </div>
+        </>
       )}
     </div>
   );

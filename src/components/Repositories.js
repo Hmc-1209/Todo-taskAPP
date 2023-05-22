@@ -16,15 +16,12 @@ const Repositories = () => {
         break;
       }
       if (repos[i] === "Repo" + index) {
-        // console.log("repo name already exist " + index);
         i = 0;
         index++;
       } else {
-        console.log("next index");
         i++;
       }
     }
-    console.log("Repo" + index);
     return "Repo" + index;
   };
 
@@ -69,15 +66,17 @@ const Repositories = () => {
 
   return (
     <>
-      {repos.map((repo) => (
-        <div
-          className={repoClass(repo)}
-          onClick={(repo) => selectRepo(repo)}
-          key={repo}
-        >
-          {repo}
-        </div>
-      ))}
+      {repos
+        .filter((repo) => repo !== "BaseRepo")
+        .map((repo) => (
+          <div
+            className={repoClass(repo)}
+            onClick={(repo) => selectRepo(repo)}
+            key={repo}
+          >
+            {repo}
+          </div>
+        ))}
       <button className="addTag" onClick={addRepo}>
         +
       </button>

@@ -8,18 +8,16 @@ import Home from "./components/Home";
 
 function App() {
   return (
-    <div style={{ marginTop: "3%", marginLeft: "12%", marginRight: "12%" }}>
-      <BrowserRouter>
-        <Routes>
-          {/* Routes */}
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Home />}></Route>
-            <Route path="contents" element={<Contents />} />
-            <Route path="tags" element={<Tags />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        {/* Routes */}
+        <Route path="/" element={<Layout />}>
+          <Route path="contents" element={<Contents />} />
+          <Route path="tags" element={<Tags />} />
+          <Route index element={<Home />}></Route>
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 
