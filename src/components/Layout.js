@@ -1,40 +1,25 @@
 import React, { createContext, useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
+import { FaExclamationCircle } from "react-icons/fa";
 
 // Components
 import SideBarL from "./SidebarL";
 import Navbar from "./Navbar";
+import { changeRepoName, createBase } from "./functions/localStorageCRUD";
 
 export const AppContext = createContext(null);
 
+// Updating repos datas
 const getRepos = () => {
   // If no repos
   if (!window.localStorage.getItem("repos")) {
-    // Setting default repo
-    window.localStorage.setItem("repos", JSON.stringify(["BaseRepo"]));
-    // Setting default task
-    window.localStorage.setItem(
-      "tasks",
-      JSON.stringify([
-        {
-          repoName: "BaseRepo",
-          tasks: [
-            {
-              taskName: "BaseTask",
-              due: Date(),
-              tags: "none",
-              notes: "This is a base repo due to not reading a null element",
-              status: "This should nerver been used",
-            },
-          ],
-        },
-      ])
-    );
+    createBase();
   }
   const data = window.localStorage.getItem("repos");
   return JSON.parse(data);
 };
 
+// Updating tsaks datas
 const getTasks = (repo) => {
   const data = window.localStorage.getItem("tasks");
   if (!data) {
@@ -44,6 +29,7 @@ const getTasks = (repo) => {
   }
 };
 
+// Check if the repo name is legal
 const repoNameLegal = (new_name) => {
   let name = JSON.parse(window.localStorage.getItem("repos"));
   return name.find((name) => name === new_name) ? 0 : 1;
@@ -57,42 +43,42 @@ const Layout = () => {
   const [editing, setEditing] = useState(2);
   const [editingItem, setEditingItem] = useState(null);
   const [editingType, setEditingType] = useState(null);
-  const [reRender, setReRerender] = useState(0);
+  const [reRender, setReRender] = useState(0);
+  const [alert, setAlert] = useState(0);
+  const [alertMessage, setAlertMessage] = useState(null);
 
   useEffect(() => {
     setTasks(getTasks(selectedRepo));
     setRepos(getRepos(selectedRepo));
   }, [selectedRepo, reRender]);
 
-  const changeEditingState = () => {
-    if (editing === 2) setEditing(0);
+  useEffect(() => {
+    setTimeout(() => {
+      setAlert(0);
+      setAlertMessage(null);
+    }, 2000);
+  }, [alert]);
 
+  // On change (finished editing)
+  const changeEditingState = () => {
+    // Default first click
+    if (editing === 2) setEditing(0);
+    // If finish editing
     if (editing === 1) {
       const new_name = document.getElementById("selectedItem").value;
-      if (new_name !== "" && repoNameLegal(new_name)) {
-        // Change repos datas
-        let repos_data = JSON.parse(window.localStorage.getItem("repos"));
-        repos_data.splice(repos_data.indexOf(editingItem), 1, new_name);
-
-        // Change tasks datas
-        let tasks_data = JSON.parse(window.localStorage.getItem("tasks"));
-
-        console.log(
-          "1",
-          tasks_data,
-          tasks_data.find((element) => element.repoName === editingItem)
-        );
-
-        tasks_data.find(
-          (element) => element.repoName === editingItem
-        ).repoName = new_name;
-
-        window.localStorage.setItem("repos", JSON.stringify(repos_data));
-        window.localStorage.setItem("tasks", JSON.stringify(tasks_data));
-
+      if (new_name !== "" && repoNameLegal(new_name) && new_name.length <= 15) {
+        changeRepoName(new_name, editingItem);
         setSelectedRepo(new_name);
+      } else {
+        if (!repoNameLegal(new_name)) {
+          setAlertMessage("Repository name repeated !");
+          setAlert(1);
+        } else if (new_name > 15) {
+          setAlertMessage("Repository name should be less then 15 letters !");
+          setAlert(1);
+        }
       }
-      setReRerender(reRender + 1);
+      setReRender(reRender + 1);
       setEditingItem(null);
       setEditingType(null);
       setEditing(0);
@@ -120,6 +106,12 @@ const Layout = () => {
           setEditingItem,
           editingType,
           setEditingType,
+          alert,
+          setAlert,
+          alertMessage,
+          setAlertMessage,
+          reRender,
+          setReRender,
         }}
       >
         <Navbar />
@@ -131,6 +123,15 @@ const Layout = () => {
           <Outlet />
         </div>
       </AppContext.Provider>
+
+      {alert !== 0 && (
+        <div className="alert">
+          <div className="error">
+            <FaExclamationCircle className="exclamationIcon" />
+            {alertMessage}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

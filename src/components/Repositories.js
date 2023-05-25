@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from "react";
 
 // Context
 import { AppContext } from "./Layout";
+import { updateTasksOnCreate } from "./functions/localStorageCRUD";
 
 const Repositories = () => {
   const { repos, setRepos, selectedRepo, setSelectedRepo } =
@@ -26,29 +27,11 @@ const Repositories = () => {
   };
 
   // Add a repository
-  const addRepo = () => {
+  const createRepo = () => {
     const new_repo = repo_name();
     const data = repos.concat(new_repo);
     setRepos(data);
-    // Update tasks
-    let taskData = JSON.parse(window.localStorage.getItem("tasks"));
-    window.localStorage.setItem(
-      "tasks",
-      JSON.stringify(
-        taskData.concat({
-          repoName: new_repo,
-          tasks: [
-            {
-              taskName: "task1",
-              due: Date(),
-              tags: "",
-              notes: "",
-              status: "unfinished",
-            },
-          ],
-        })
-      )
-    );
+    updateTasksOnCreate(new_repo);
   };
   useEffect(() => {
     window.localStorage.setItem("repos", JSON.stringify(repos));
@@ -61,7 +44,7 @@ const Repositories = () => {
 
   // Set the selected repository
   const selectRepo = (repo) => {
-    setSelectedRepo(repo.target.outerText.split(" ")[0]);
+    setSelectedRepo(repo.target.outerText);
   };
 
   return (
@@ -77,7 +60,7 @@ const Repositories = () => {
             {repo}
           </div>
         ))}
-      <button className="addTag" onClick={addRepo}>
+      <button className="addTag" onClick={createRepo}>
         +
       </button>
     </>

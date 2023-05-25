@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
-import { FaTrash, FaPencilAlt } from "react-icons/fa";
+import { FaTrash } from "react-icons/fa";
 
 // Context
 import { AppContext } from "./Layout";
-import { deleteRepo } from "./function/localStorageCRUD";
+import { addEmptyTask, deleteRepo } from "./functions/localStorageCRUD";
 
 const Contents = () => {
   let {
@@ -15,7 +15,15 @@ const Contents = () => {
     editingItem,
     setEditingItem,
     setEditingType,
+    reRender,
+    setReRender,
   } = useContext(AppContext);
+
+  const addTask = (selectedRepo) => {
+    addEmptyTask(selectedRepo);
+    setReRender(reRender + 1);
+    // setSelectedRepo("BaseRepo");
+  };
 
   // On delete particular repo
   const delRepo = () => {
@@ -32,6 +40,7 @@ const Contents = () => {
     }
   };
 
+  // Selected repo name for editing
   const selectElement_repos = (name) => {
     setEditing(1);
     setEditingItem(name);
@@ -40,7 +49,12 @@ const Contents = () => {
 
   return (
     <div className="contents">
-      {console.log()}
+      {selectedRepo === "BaseRepo" && repos.length === 1 && (
+        <div className="contentHint">Create a repo to start</div>
+      )}
+      {selectedRepo === "BaseRepo" && repos.length !== 1 && (
+        <div className="contentHint">Select a repo</div>
+      )}
       {selectedRepo !== "BaseRepo" && (
         <>
           {/* Title */}
@@ -62,20 +76,26 @@ const Contents = () => {
 
           {/* Tasks */}
           {tasks.map((task) => (
-            <div className="task" key={task.taskName}>
-              {task.taskName}
+            <div className="task" key={task.id}>
+              <div>{task.taskName}</div>
+
               <br />
-              {task.due}
+              <div>{task.due}</div>
             </div>
           ))}
 
           {/* Bottom */}
           <div className="contentBottom">
-            <button className="addTaskBtn">+</button>
-            <FaPencilAlt className="icon" />
+            <button
+              className="addTaskBtn"
+              onClick={() => addTask(selectedRepo)}
+            >
+              +
+            </button>
+
             {repos.length !== 1 && (
               <button className="deleteBtn" onClick={delRepo}>
-                <FaTrash className="icon" />
+                <FaTrash className="trashIcon" />
               </button>
             )}
           </div>
