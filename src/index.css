@@ -123,11 +123,11 @@ input:focus {
 }
 .repoName {
   background-color:#a4b3de;
-  margin:0 2% 2% 2%;
+  margin:0;
   font-size: 3vw;
   text-align: center;
 }
-.contentBottom {
+.contentRepoFunctional {
   background-color:#a4b3de;
   margin:0 3% 3% 3%;
   font-size: 1.5vw;
@@ -138,6 +138,29 @@ input:focus {
   margin: 2%;
   padding:2%;
   border-radius: 1vh;
+  display: flex;
+  flex-wrap: wrap;
+}
+.taskLeft {
+  width:30%;
+  height: auto;
+}
+.taskNote {
+  width: 50%;
+  font-size: 2vh;
+  font-weight: lighter;
+  max-height:5vw;
+  display: block;
+  overflow: scroll;
+  flex-wrap: wrap;
+  transition: all .4s ease-in;
+  border: 1px solid #a4b3de;
+  padding:1%;
+  border-radius: 1vh;
+}
+.taskNote:hover {
+  max-height:100px;
+  transition: all .4s ease-in;
 }
 .deleteBtn {
   color:rgb(207, 72, 72);
@@ -147,6 +170,15 @@ input:focus {
   background-color:#a4b3de;
   border:none;
   border-radius: 1vh;
+}
+.delConfirm {
+  font-weight: bold;
+  color:rgb(207, 72, 72);
+  background-color: #a4b3de;
+  font-size: 2vw;
+  border:none;
+  position: fixed;
+  
 }
 .editBtn {
   color:#c6c5c3;
@@ -243,4 +275,32 @@ input:focus {
 .repoRename::placeholder {
   color:#ffead2c3;
   font-weight: bold;
+}
+.taskRename {
+  /* margin-bottom:4%; */
+  padding:0;
+  height:fit-content;
+  font-size: 2.5vh;
+  color:#FFEAD2;
+  font-weight: bold;
+  border: none;
+  display: block;
+} 
+.taskRename::placeholder {
+  color:#ffead2c3;
+  font-weight: bold;
+}
+.taskChangeNote {
+  color:#FFEAD2;
+  outline: none;
+  width: 50%;
+  font-size: 2vh;
+  max-height:5vw;
+  display: block;
+  overflow: scroll;
+  flex-wrap: wrap;
+  transition: all .4s ease-in;
+  border: 1px solid #a4b3de;
+  padding:1%;
+  border-radius: 1vh;
 }

@@ -5,7 +5,12 @@ import { FaExclamationCircle } from "react-icons/fa";
 // Components
 import SideBarL from "./SidebarL";
 import Navbar from "./Navbar";
-import { changeRepoName, createBase } from "./functions/localStorageCRUD";
+import {
+  changeRepoName,
+  changeTaskName,
+  createBase,
+  changeTaskNote,
+} from "./functions/localStorageCRUD";
 
 export const AppContext = createContext(null);
 
@@ -40,16 +45,18 @@ const Layout = () => {
   const [selectedRepo, setSelectedRepo] = useState(repos[0]);
   const [tasks, setTasks] = useState([]);
   const [tags, setTags] = useState(["School", "Lab", "Friend"]);
-  const [editing, setEditing] = useState(2);
+  const [editing, setEditing] = useState(-1);
   const [editingItem, setEditingItem] = useState(null);
   const [editingType, setEditingType] = useState(null);
   const [reRender, setReRender] = useState(0);
   const [alert, setAlert] = useState(0);
   const [alertMessage, setAlertMessage] = useState(null);
+  const [delRepoConfirm, setDelRepoConfirm] = useState(0);
 
   useEffect(() => {
     setTasks(getTasks(selectedRepo));
     setRepos(getRepos(selectedRepo));
+    setDelRepoConfirm(0);
   }, [selectedRepo, reRender]);
 
   useEffect(() => {
@@ -62,26 +69,52 @@ const Layout = () => {
   // On change (finished editing)
   const changeEditingState = () => {
     // Default first click
-    if (editing === 2) setEditing(0);
+    if (editing === -1) setEditing(0);
     // If finish editing
-    if (editing === 1) {
-      const new_name = document.getElementById("selectedItem").value;
-      if (new_name !== "" && repoNameLegal(new_name) && new_name.length <= 15) {
-        changeRepoName(new_name, editingItem);
-        setSelectedRepo(new_name);
-      } else {
-        if (!repoNameLegal(new_name)) {
-          setAlertMessage("Repository name repeated !");
+    else {
+      if (editing === 1) {
+        const new_name = document.getElementById("selectedItem").value;
+        if (
+          new_name !== "" &&
+          repoNameLegal(new_name) &&
+          new_name.length <= 15
+        ) {
+          changeRepoName(new_name, editingItem);
+          setSelectedRepo(new_name);
+        } else {
+          if (!repoNameLegal(new_name)) {
+            setAlertMessage("Repository name repeated !");
+            setAlert(1);
+          } else if (new_name > 15) {
+            setAlertMessage("Repository name should be less then 15 letters !");
+            setAlert(1);
+          }
+        }
+      } else if (editing === 2) {
+        const new_task_name = document.getElementById("selectedItem").value;
+        if (new_task_name !== "" && new_task_name.length <= 10) {
+          changeTaskName(selectedRepo, editingItem, new_task_name);
+        } else if (new_task_name > 10) {
+          setAlertMessage("Task name should be less then 10 letters !");
           setAlert(1);
-        } else if (new_name > 15) {
-          setAlertMessage("Repository name should be less then 15 letters !");
+        }
+      } else if (editing === 4) {
+        const new_task_note = document.getElementById("selectedItem").value;
+        if (new_task_note.length <= 500) {
+          changeTaskNote(selectedRepo, editingItem, new_task_note);
+        } else if (new_task_note > 500) {
+          setAlertMessage("Task name should be less then 500 letters !");
           setAlert(1);
         }
       }
-      setReRender(reRender + 1);
-      setEditingItem(null);
-      setEditingType(null);
-      setEditing(0);
+      // Reseting click detect
+      if (editing !== 0) {
+        setReRender(reRender + 1);
+        setEditingItem(null);
+        setEditingType(null);
+        setDelRepoConfirm(0);
+        setEditing(0);
+      }
     }
   };
 
@@ -112,6 +145,8 @@ const Layout = () => {
           setAlertMessage,
           reRender,
           setReRender,
+          delRepoConfirm,
+          setDelRepoConfirm,
         }}
       >
         <Navbar />

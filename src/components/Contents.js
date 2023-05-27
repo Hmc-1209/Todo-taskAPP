@@ -3,7 +3,19 @@ import { FaTrash } from "react-icons/fa";
 
 // Context
 import { AppContext } from "./Layout";
-import { addEmptyTask, deleteRepo } from "./functions/localStorageCRUD";
+import {
+  addEmptyTask,
+  deleteRepo,
+  getTaskName,
+  getTaskNote,
+} from "./functions/localStorageCRUD";
+
+// Move circus
+const moveCaretAtEnd = (e) => {
+  var temp_value = e.target.value;
+  e.target.value = "";
+  e.target.value = temp_value;
+};
 
 const Contents = () => {
   let {
@@ -14,15 +26,17 @@ const Contents = () => {
     setEditing,
     editingItem,
     setEditingItem,
+    editingType,
     setEditingType,
     reRender,
     setReRender,
+    delRepoConfirm,
+    setDelRepoConfirm,
   } = useContext(AppContext);
 
   const addTask = (selectedRepo) => {
     addEmptyTask(selectedRepo);
     setReRender(reRender + 1);
-    // setSelectedRepo("BaseRepo");
   };
 
   // On delete particular repo
@@ -37,6 +51,16 @@ const Contents = () => {
             : JSON.parse(window.localStorage.getItem("repos"))[1]
           : JSON.parse(window.localStorage.getItem("repos"))[selectedIndex - 1]
       );
+      setDelRepoConfirm(0);
+    }
+  };
+  const delConfirm = () => {
+    if (delRepoConfirm) {
+      delRepo();
+    } else {
+      setEditing(3);
+      setEditingType("delRepo");
+      setDelRepoConfirm(1);
     }
   };
 
@@ -45,6 +69,20 @@ const Contents = () => {
     setEditing(1);
     setEditingItem(name);
     setEditingType("repos");
+  };
+
+  // Selected task id for editing task_name
+  const selectElement_task_name = (task_id) => {
+    setEditing(2);
+    setEditingItem(task_id);
+    setEditingType("task:name");
+  };
+
+  // Selected task id for editing task_note
+  const selectElement_task_note = (task_id) => {
+    setEditing(4);
+    setEditingItem(task_id);
+    setEditingType("task:note");
   };
 
   return (
@@ -74,18 +112,8 @@ const Contents = () => {
             />
           )}
 
-          {/* Tasks */}
-          {tasks.map((task) => (
-            <div className="task" key={task.id}>
-              <div>{task.taskName}</div>
-
-              <br />
-              <div>{task.due}</div>
-            </div>
-          ))}
-
-          {/* Bottom */}
-          <div className="contentBottom">
+          {/* Functional */}
+          <div className="contentRepoFunctional">
             <button
               className="addTaskBtn"
               onClick={() => addTask(selectedRepo)}
@@ -94,11 +122,67 @@ const Contents = () => {
             </button>
 
             {repos.length !== 1 && (
-              <button className="deleteBtn" onClick={delRepo}>
-                <FaTrash className="trashIcon" />
-              </button>
+              <>
+                <button className="deleteBtn" onClick={delConfirm}>
+                  <FaTrash className="trashIcon" />
+                </button>
+                {delRepoConfirm ? (
+                  <button className="delConfirm" onClick={delRepo}>
+                    !
+                  </button>
+                ) : (
+                  <></>
+                )}
+              </>
             )}
           </div>
+
+          {/* Tasks */}
+          {tasks
+            .filter((task) => task.id !== 0)
+            .map((task) => (
+              <div className="task" key={task.id}>
+                <div className="taskLeft">
+                  {editingItem !== task.id || editingType !== "task:name" ? (
+                    <div
+                      onClick={() => selectElement_task_name(task.id)}
+                      style={{ paddingBottom: "2%" }}
+                    >
+                      {task.taskName}
+                    </div>
+                  ) : (
+                    <input
+                      className="taskRename"
+                      id={"selectedItem"}
+                      autoFocus={true}
+                      placeholder={getTaskName(selectedRepo, task.id)}
+                      style={{ paddingBottom: "2%" }}
+                    />
+                  )}
+                  <hr style={{ width: "90%" }} />
+                  <br />
+                  <div>{task.due}</div>
+                </div>
+                {editingItem !== task.id || editingType !== "task:note" ? (
+                  <div
+                    className="taskNote"
+                    onClick={() => selectElement_task_note(task.id)}
+                  >
+                    {task.notes}
+                  </div>
+                ) : (
+                  <textarea
+                    className="taskChangeNote"
+                    autoFocus={true}
+                    onFocus={moveCaretAtEnd}
+                    id="selectedItem"
+                    spellCheck={false}
+                  >
+                    {getTaskNote(selectedRepo, task.id)}
+                  </textarea>
+                )}
+              </div>
+            ))}
         </>
       )}
     </div>

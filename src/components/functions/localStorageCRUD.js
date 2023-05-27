@@ -116,3 +116,35 @@ export const addEmptyTask = (selectedRepo) => {
 
   window.localStorage.setItem("tasks", JSON.stringify(Data));
 };
+
+/* When a task name changed, adjust the corresponding taskName in tasks */
+export const changeTaskName = (selectedRepo, task_id, new_task_name) => {
+  let task_data = JSON.parse(window.localStorage.getItem("tasks"));
+  task_data
+    .filter((repo) => repo.repoName === selectedRepo)[0]
+    .tasks.filter((task) => task.id === task_id)[0].taskName = new_task_name;
+  window.localStorage.setItem("tasks", JSON.stringify(task_data));
+};
+
+/* Get task name for placeholder */
+export const getTaskName = (selectedRepo, task_id) => {
+  return JSON.parse(window.localStorage.getItem("tasks"))
+    .find((repo) => repo.repoName === selectedRepo)
+    .tasks.find((task) => task.id === task_id).taskName;
+};
+
+/* Get task note for textarea's default value */
+export const getTaskNote = (selectedRepo, task_id) => {
+  return JSON.parse(window.localStorage.getItem("tasks"))
+    .find((repo) => repo.repoName === selectedRepo)
+    .tasks.find((task) => task.id === task_id).notes;
+};
+
+/* When a task note changed, adjust the corresponding note in tasks */
+export const changeTaskNote = (selectedRepo, task_id, new_task_note) => {
+  let task_data = JSON.parse(window.localStorage.getItem("tasks"));
+  task_data
+    .filter((repo) => repo.repoName === selectedRepo)[0]
+    .tasks.filter((task) => task.id === task_id)[0].notes = new_task_note;
+  window.localStorage.setItem("tasks", JSON.stringify(task_data));
+};

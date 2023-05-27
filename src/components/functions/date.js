@@ -3,13 +3,8 @@ export const getNowDate = () => {
   time =
     time.getFullYear() +
     "/" +
-    time.getMonth() +
+    (parseInt(time.getMonth()) + 1) +
     "/" +
-    time.getDate() +
-    " " +
-    time.getHours() +
-    ":" +
-    time.getMinutes();
-  console.log(time);
+    time.getDate();
   return time;
 };
