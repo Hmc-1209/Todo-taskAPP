@@ -105,7 +105,7 @@ export const addEmptyTask = (selectedRepo) => {
     {
       taskName: "Task",
       due: getNowDate(),
-      tags: "",
+      tags: [],
       notes: "",
       status: "unfinished",
       id: get_task_index(taskData),
@@ -146,5 +146,18 @@ export const changeTaskNote = (selectedRepo, task_id, new_task_note) => {
   task_data
     .filter((repo) => repo.repoName === selectedRepo)[0]
     .tasks.filter((task) => task.id === task_id)[0].notes = new_task_note;
+  window.localStorage.setItem("tasks", JSON.stringify(task_data));
+};
+
+export const delTask = (selectedRepo, task_id) => {
+  let task_data = JSON.parse(window.localStorage.getItem("tasks"));
+
+  const del_task = task_data
+    .filter((repo) => repo.repoName === selectedRepo)[0]
+    .tasks.filter((task) => task.id !== task_id);
+
+  task_data.filter((repo) => repo.repoName === selectedRepo)[0].tasks =
+    del_task;
+
   window.localStorage.setItem("tasks", JSON.stringify(task_data));
 };

@@ -141,7 +141,7 @@ input:focus {
   display: flex;
   flex-wrap: wrap;
 }
-.taskLeft {
+.taskInfo {
   width:30%;
   height: auto;
 }
@@ -153,14 +153,16 @@ input:focus {
   display: block;
   overflow: scroll;
   flex-wrap: wrap;
-  transition: all .4s ease-in;
+  transition: all .2s ease-in;
+  /* transition: height .4s ease-in; */
   border: 1px solid #a4b3de;
   padding:1%;
   border-radius: 1vh;
 }
 .taskNote:hover {
   max-height:100px;
-  transition: all .4s ease-in;
+  transition: all .2s ease-in;
+  transition: max-height .4s ease-in;
 }
 .deleteBtn {
   color:rgb(207, 72, 72);
@@ -177,7 +179,7 @@ input:focus {
   background-color: #a4b3de;
   font-size: 2vw;
   border:none;
-  position: fixed;
+  position: absolute;
   
 }
 .editBtn {
@@ -235,6 +237,69 @@ input:focus {
 .exclamationIcon {
   padding:0 1% 0 0;
   background-color: rgba(255, 0, 0, 0);
+}
+.finished {
+  background-color: #678b63;
+}
+.markFinishBtn {
+  margin:0 2% 4% 1%;
+  width:2vw;
+  height:2vw;
+  border-radius: 5vh;
+  accent-color: #7eaf23;
+  background-color: #a4b3de;
+}
+.markFinishBtn::after {
+  content: "";
+  position: absolute;
+  width: 2vw;
+  height: 2vw;  
+  border-radius: 3px;
+  background-color: #a4b3de;
+}
+.markFinishBtn:hover::after {
+  background-color: #93a6da;
+}
+.markFinishBtn:checked::after {
+  display: none;
+}
+.delTaskBtn {
+  display:block;
+  content: "";
+  margin:4.5vh 0 0 3%;
+  max-width:2vw;
+  height:.8vh;  
+  background-color: rgb(182, 77, 77);
+  border-radius: 1vh;
+}
+.delTaskBtn_hover {
+  display:block;
+  content: "";
+  margin:4.5vh 0 0 3%;
+  width:2vw;
+  height:.8vh;  
+  background-color: rgb(182, 77, 77);
+  border-radius: 1vh;
+  rotate: 45deg;
+}
+.delTaskBtn_hover::after {
+  display:block;
+  content: "";
+  width:2vw;
+  height:.8vh;  
+  background-color: rgb(182, 77, 77);
+  border-radius: 1vh;
+  rotate: -90deg;
+}
+.delTaskBtn_hover::before {
+  content: "";
+  position: absolute;
+  bottom:-.8vw;
+  right:0vw;
+  width:2vw;
+  height:2vw;  
+  /* background-color: green; */
+  border-radius: 1vh;
 }
 
 /* Styles for tags part*/
@@ -299,7 +364,7 @@ input:focus {
   display: block;
   overflow: scroll;
   flex-wrap: wrap;
-  transition: all .4s ease-in;
+  transition: max-height .4s ease-in;
   border: 1px solid #a4b3de;
   padding:1%;
   border-radius: 1vh;

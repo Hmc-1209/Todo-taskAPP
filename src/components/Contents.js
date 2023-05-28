@@ -1,10 +1,11 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { FaTrash } from "react-icons/fa";
 
 // Context
 import { AppContext } from "./Layout";
 import {
   addEmptyTask,
+  delTask,
   deleteRepo,
   getTaskName,
   getTaskNote,
@@ -18,6 +19,8 @@ const moveCaretAtEnd = (e) => {
 };
 
 const Contents = () => {
+  const [hoverTask, setHoverTask] = useState(0);
+
   let {
     tasks,
     repos,
@@ -33,6 +36,23 @@ const Contents = () => {
     delRepoConfirm,
     setDelRepoConfirm,
   } = useContext(AppContext);
+
+  const task_finish = (task_id) => {
+    let finish_status = JSON.parse(window.localStorage.getItem("tasks"))
+      .filter((repo) => repo.repoName === selectedRepo)[0]
+      .tasks.filter((task) => task.id === task_id)[0];
+    if (finish_status) finish_status = finish_status.status;
+    else return "";
+    return finish_status === "finished" ? " finished" : "";
+  };
+  const checked = (task_id) => {
+    let finish_status = JSON.parse(window.localStorage.getItem("tasks"))
+      .filter((repo) => repo.repoName === selectedRepo)[0]
+      .tasks.filter((task) => task.id === task_id)[0];
+    if (finish_status) finish_status = finish_status.status;
+    else return "";
+    return finish_status === "finished" ? true : false;
+  };
 
   const addTask = (selectedRepo) => {
     addEmptyTask(selectedRepo);
@@ -61,6 +81,21 @@ const Contents = () => {
       setEditing(3);
       setEditingType("delRepo");
       setDelRepoConfirm(1);
+    }
+  };
+
+  const switchStatus = (task_id) => {
+    let task_data = JSON.parse(window.localStorage.getItem("tasks"));
+    const now_status = task_data
+      .filter((repo) => repo.repoName === selectedRepo)[0]
+      .tasks.filter((task) => task.id === task_id)[0].status;
+    task_data
+      .filter((repo) => repo.repoName === selectedRepo)[0]
+      .tasks.filter((task) => task.id === task_id)[0].status =
+      now_status === "finished" ? "unfinished" : "finished";
+    if (now_status) {
+      window.localStorage.setItem("tasks", JSON.stringify(task_data));
+      setReRender(reRender + 1);
     }
   };
 
@@ -141,18 +176,32 @@ const Contents = () => {
           {tasks
             .filter((task) => task.id !== 0)
             .map((task) => (
-              <div className="task" key={task.id}>
-                <div className="taskLeft">
+              <div
+                className={"task" + task_finish(task.id)}
+                key={task.id}
+                onMouseEnter={() => setHoverTask(task.id)}
+                onMouseLeave={() => setHoverTask(0)}
+              >
+                {/* Mark finish buttom */}
+                <input
+                  type="checkbox"
+                  className={"markFinishBtn" + task_finish(task.id)}
+                  onChange={() => switchStatus(task.id)}
+                  checked={checked(task.id)}
+                />
+                {/* Task info include name and due date */}
+                <div className={"taskInfo" + task_finish(task.id)}>
                   {editingItem !== task.id || editingType !== "task:name" ? (
                     <div
                       onClick={() => selectElement_task_name(task.id)}
                       style={{ paddingBottom: "2%" }}
+                      className={task_finish(task.id)}
                     >
                       {task.taskName}
                     </div>
                   ) : (
                     <input
-                      className="taskRename"
+                      className={"taskRename" + task_finish(task.id)}
                       id={"selectedItem"}
                       autoFocus={true}
                       placeholder={getTaskName(selectedRepo, task.id)}
@@ -161,26 +210,36 @@ const Contents = () => {
                   )}
                   <hr style={{ width: "90%" }} />
                   <br />
-                  <div>{task.due}</div>
+                  <div className={task_finish(task.id)}>{task.due}</div>
                 </div>
+                {/* Task note */}
                 {editingItem !== task.id || editingType !== "task:note" ? (
                   <div
-                    className="taskNote"
+                    className={"taskNote" + task_finish(task.id)}
                     onClick={() => selectElement_task_note(task.id)}
                   >
                     {task.notes}
                   </div>
                 ) : (
                   <textarea
-                    className="taskChangeNote"
+                    className={"taskChangeNote" + task_finish(task.id)}
                     autoFocus={true}
                     onFocus={moveCaretAtEnd}
                     id="selectedItem"
                     spellCheck={false}
-                  >
-                    {getTaskNote(selectedRepo, task.id)}
-                  </textarea>
+                    defaultValue={getTaskNote(selectedRepo, task.id)}
+                  ></textarea>
                 )}
+                {/* Del task button */}
+                <div
+                  className={
+                    hoverTask === task.id ? "delTaskBtn_hover" : "delTaskBtn"
+                  }
+                  onClick={() => {
+                    delTask(selectedRepo, task.id);
+                    setReRender(reRender + 1);
+                  }}
+                ></div>
               </div>
             ))}
         </>
