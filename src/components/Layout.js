@@ -52,6 +52,8 @@ const Layout = () => {
   const [alert, setAlert] = useState(0);
   const [alertMessage, setAlertMessage] = useState(null);
   const [delRepoConfirm, setDelRepoConfirm] = useState(0);
+  const [due, setDue] = useState([-1, -1, -1]);
+  const [focusing, setFocusing] = useState(0);
 
   useEffect(() => {
     setTasks(getTasks(selectedRepo));
@@ -108,7 +110,7 @@ const Layout = () => {
         }
       }
       // Reseting click detect
-      if (editing !== 0) {
+      if (editing !== 0 && editing !== 5) {
         setReRender(reRender + 1);
         setEditingItem(null);
         setEditingType(null);
@@ -121,7 +123,7 @@ const Layout = () => {
   return (
     <div
       style={{ marginTop: "3%", marginLeft: "12%", marginRight: "12%" }}
-      onClick={changeEditingState}
+      onClick={() => changeEditingState()}
     >
       <AppContext.Provider
         value={{
@@ -147,6 +149,10 @@ const Layout = () => {
           setReRender,
           delRepoConfirm,
           setDelRepoConfirm,
+          due,
+          setDue,
+          focusing,
+          setFocusing,
         }}
       >
         <Navbar />

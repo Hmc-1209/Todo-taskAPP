@@ -134,6 +134,7 @@ input:focus {
   text-align: right;
 }
 .task {
+  position: relative;
   width: 92%;
   margin: 2%;
   padding:2%;
@@ -264,19 +265,17 @@ input:focus {
   display: none;
 }
 .delTaskBtn {
-  display:block;
   content: "";
   margin:4.5vh 0 0 3%;
-  max-width:2vw;
+  width:2vw;
   height:.8vh;  
   background-color: rgb(182, 77, 77);
   border-radius: 1vh;
 }
 .delTaskBtn_hover {
-  display:block;
   content: "";
   margin:4.5vh 0 0 3%;
-  width:2vw;
+  max-width:2vw;
   height:.8vh;  
   background-color: rgb(182, 77, 77);
   border-radius: 1vh;
@@ -368,4 +367,85 @@ input:focus {
   border: 1px solid #a4b3de;
   padding:1%;
   border-radius: 1vh;
+}
+.datePickerBase {
+  height:fit-content;
+  width: 25%;
+  position: absolute;
+  top:-80%;
+  text-align: center;
+  font-weight: bold;
+  background-color: #FFEAD2;
+  border-radius: 1vh;
+  color:#93a6da;
+  font-size: 1.5vh;
+  border:1px solid black;
+  transition:none;
+}
+.datePickerYear {
+  font-size: medium;
+  /* margin:2%; */
+  border-radius: 1vh 1vh 0 0;
+  background-color: #b4cbd7;
+}
+.datePickerMonth {
+  font-size: medium;
+  background-color: #FFEAD2;
+}
+.daysInWeek {
+  background-color: #FFEAD2;
+  width: 14.2857%;
+  display: inline-block;
+  /* overflow: hidden; */
+  /* padding:0 1% 0 1%; */
+}
+.days {
+  color:#93a6da;
+  font-weight: bold;
+  border:none;
+  border-radius: 1vh;
+  background-color: #FFEAD2;
+  width: 14%;
+  display: inline-block;
+  padding:0 1% 0 1%;
+  margin-bottom: 1%;
+}
+.daysSelected {
+  background-color: #d7d7d5;
+}
+.daysN {
+  width: 14%;
+  display: inline-block;
+}
+.days:hover {
+  box-shadow: -1px 1px 2px 1px #8294C4;
+}
+.monthPNbutton {
+  border:none;
+  color:#a4b3de;
+  font-weight: bold;
+  background-color: #FFEAD2;
+}
+.closeDatePicker {
+  top:0;
+  right: 0;
+  width: 12%;
+  position: absolute;
+  color: #FFEAD2;
+  background-color: rgb(204, 94, 94);
+  font-weight: bold;
+  border:none;
+  border-radius: .5vh;
+  border-top-right-radius: .9vh;
+  border-bottom-right-radius: 0;
+}
+.back {
+  position: fixed;
+  content: "";
+  width: 100vw;
+  height: 100vh;
+  top:0;
+  left:0;
+  background-color: black;
+  opacity: .0;
 }

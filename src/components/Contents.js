@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
 import { FaTrash } from "react-icons/fa";
+import TaskDatePicker from "./common/TaskDatePicker";
 
 // Context
 import { AppContext } from "./Layout";
@@ -9,6 +10,7 @@ import {
   deleteRepo,
   getTaskName,
   getTaskNote,
+  readDue,
 } from "./functions/localStorageCRUD";
 
 // Move circus
@@ -26,6 +28,7 @@ const Contents = () => {
     repos,
     selectedRepo,
     setSelectedRepo,
+    editing,
     setEditing,
     editingItem,
     setEditingItem,
@@ -35,6 +38,8 @@ const Contents = () => {
     setReRender,
     delRepoConfirm,
     setDelRepoConfirm,
+    setDue,
+    setFocusing,
   } = useContext(AppContext);
 
   const task_finish = (task_id) => {
@@ -120,6 +125,25 @@ const Contents = () => {
     setEditingType("task:note");
   };
 
+  // Selected task id for editing task_due
+  const selectElement_task_due = (task_id) => {
+    let due = readDue(selectedRepo, task_id);
+    due = due.split("/");
+    setEditing(5);
+    setDue([parseInt(due[0], 10), parseInt(due[1], 10), parseInt(due[2], 10)]);
+    setEditingItem(task_id);
+    setEditingType("task:due");
+    setFocusing(1);
+  };
+
+  const closeDatePicker = () => {
+    setEditingItem(null);
+    setEditingType(null);
+    setEditing(0);
+    setFocusing(0);
+    setReRender(reRender + 1);
+  };
+
   return (
     <div className="contents">
       {selectedRepo === "BaseRepo" && repos.length === 1 && (
@@ -189,6 +213,7 @@ const Contents = () => {
                   onChange={() => switchStatus(task.id)}
                   checked={checked(task.id)}
                 />
+
                 {/* Task info include name and due date */}
                 <div className={"taskInfo" + task_finish(task.id)}>
                   {editingItem !== task.id || editingType !== "task:name" ? (
@@ -210,8 +235,20 @@ const Contents = () => {
                   )}
                   <hr style={{ width: "90%" }} />
                   <br />
-                  <div className={task_finish(task.id)}>{task.due}</div>
+                  <div
+                    className={task_finish(task.id)}
+                    onClick={() => selectElement_task_due(task.id)}
+                  >
+                    {task.due}
+                  </div>
+                  {editingType === "task:due" && editingItem === task.id && (
+                    <div>
+                      <div className="back" onClick={() => closeDatePicker()} />
+                      <TaskDatePicker />
+                    </div>
+                  )}
                 </div>
+
                 {/* Task note */}
                 {editingItem !== task.id || editingType !== "task:note" ? (
                   <div
@@ -230,16 +267,19 @@ const Contents = () => {
                     defaultValue={getTaskNote(selectedRepo, task.id)}
                   ></textarea>
                 )}
+
                 {/* Del task button */}
                 <div
                   className={
                     hoverTask === task.id ? "delTaskBtn_hover" : "delTaskBtn"
                   }
                   onClick={() => {
-                    delTask(selectedRepo, task.id);
-                    setReRender(reRender + 1);
+                    if (editing === 0) {
+                      delTask(selectedRepo, task.id);
+                      setReRender(reRender + 1);
+                    }
                   }}
-                ></div>
+                />
               </div>
             ))}
         </>

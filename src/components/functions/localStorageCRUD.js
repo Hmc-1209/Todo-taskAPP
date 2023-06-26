@@ -112,8 +112,6 @@ export const addEmptyTask = (selectedRepo) => {
     },
   ].concat(taskData);
 
-  console.log(Data);
-
   window.localStorage.setItem("tasks", JSON.stringify(Data));
 };
 
@@ -135,20 +133,25 @@ export const getTaskName = (selectedRepo, task_id) => {
 
 /* Get task note for textarea's default value */
 export const getTaskNote = (selectedRepo, task_id) => {
-  return JSON.parse(window.localStorage.getItem("tasks"))
+  const data = window.localStorage.getItem("tasks");
+  if (!data) return;
+  return JSON.parse(data)
     .find((repo) => repo.repoName === selectedRepo)
     .tasks.find((task) => task.id === task_id).notes;
 };
 
 /* When a task note changed, adjust the corresponding note in tasks */
 export const changeTaskNote = (selectedRepo, task_id, new_task_note) => {
-  let task_data = JSON.parse(window.localStorage.getItem("tasks"));
+  let task_data = window.localStorage.getItem("tasks");
+  if (!task_data) return;
+  task_data = JSON.parse(task_data);
   task_data
     .filter((repo) => repo.repoName === selectedRepo)[0]
     .tasks.filter((task) => task.id === task_id)[0].notes = new_task_note;
   window.localStorage.setItem("tasks", JSON.stringify(task_data));
 };
 
+/* Delete a task */
 export const delTask = (selectedRepo, task_id) => {
   let task_data = JSON.parse(window.localStorage.getItem("tasks"));
 
@@ -160,4 +163,13 @@ export const delTask = (selectedRepo, task_id) => {
     del_task;
 
   window.localStorage.setItem("tasks", JSON.stringify(task_data));
+};
+
+export const readDue = (selectedRepo, task_id) => {
+  let task_data = JSON.parse(window.localStorage.getItem("tasks"));
+
+  const task_due = task_data
+    .filter((repo) => repo.repoName === selectedRepo)[0]
+    .tasks.filter((task) => task.id === task_id)[0].due;
+  return task_due;
 };
