@@ -173,3 +173,15 @@ export const readDue = (selectedRepo, task_id) => {
     .tasks.filter((task) => task.id === task_id)[0].due;
   return task_due;
 };
+
+export const setDue = (selectedRepo, task_id, year, month, day) => {
+  const newDate = year + "/" + month + "/" + day;
+  let task_data = JSON.parse(window.localStorage.getItem("tasks"));
+
+  task_data
+    .filter((repo) => repo.repoName === selectedRepo)[0]
+    .tasks.filter((task) => task.id === task_id)[0].due = newDate;
+
+  console.log(task_data);
+  window.localStorage.setItem("tasks", JSON.stringify(task_data));
+};

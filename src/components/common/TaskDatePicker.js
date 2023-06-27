@@ -3,6 +3,7 @@ import { useContext } from "react";
 import { AppContext } from "../Layout";
 
 import { days_in_Month } from "../functions/date";
+import { setDue } from "../functions/localStorageCRUD";
 
 const daysInWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -10,7 +11,9 @@ const TaskDatePicker = () => {
   let {
     due,
     reRender,
+    selectedRepo,
     setReRender,
+    editingItem,
     setEditingItem,
     setEditingType,
     setEditing,
@@ -44,6 +47,12 @@ const TaskDatePicker = () => {
     const newMonth = month + 1 > 12 ? 1 : month + 1;
     if (newMonth === 1) setYear(year + 1);
     setMonth(newMonth);
+  };
+
+  const selectDate = (day) => {
+    console.log(year + "/" + month + "/" + day);
+    setDue(selectedRepo, editingItem, year, month, day);
+    closeDatePicker();
   };
 
   return (
@@ -88,7 +97,11 @@ const TaskDatePicker = () => {
       {/* Days elements */}
       {days_in_Month(month - 1, year).map((day) =>
         day > 0 ? (
-          <button className={checkDayClass(year, month, day)} key={day}>
+          <button
+            className={checkDayClass(year, month, day)}
+            key={day}
+            onClick={() => selectDate(day)}
+          >
             {day}
           </button>
         ) : (

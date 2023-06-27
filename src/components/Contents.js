@@ -3,7 +3,7 @@ import { FaTrash } from "react-icons/fa";
 import TaskDatePicker from "./common/TaskDatePicker";
 
 // Context
-import { AppContext } from "./Layout";
+import { AppContext, setNote } from "./Layout";
 import {
   addEmptyTask,
   delTask,
@@ -144,6 +144,15 @@ const Contents = () => {
     setReRender(reRender + 1);
   };
 
+  const stopEditingTaskNote = () => {
+    setNote(selectedRepo, editingItem);
+    setEditingItem(null);
+    setEditingType(null);
+    setEditing(0);
+    setFocusing(0);
+    setReRender(reRender + 1);
+  };
+
   return (
     <div className="contents">
       {selectedRepo === "BaseRepo" && repos.length === 1 && (
@@ -265,7 +274,10 @@ const Contents = () => {
                     id="selectedItem"
                     spellCheck={false}
                     defaultValue={getTaskNote(selectedRepo, task.id)}
-                  ></textarea>
+                  />
+                )}
+                {editing === 4 && (
+                  <div className="back" onClick={() => stopEditingTaskNote()} />
                 )}
 
                 {/* Del task button */}

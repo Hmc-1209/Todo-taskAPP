@@ -367,6 +367,7 @@ input:focus {
   border: 1px solid #a4b3de;
   padding:1%;
   border-radius: 1vh;
+  z-index: 101;
 }
 .datePickerBase {
   height:fit-content;
@@ -381,6 +382,7 @@ input:focus {
   font-size: 1.5vh;
   border:1px solid black;
   transition:none;
+  z-index: 100;
 }
 .datePickerYear {
   font-size: medium;
@@ -448,4 +450,5 @@ input:focus {
   left:0;
   background-color: black;
   opacity: .0;
+  z-index: 99;
 }

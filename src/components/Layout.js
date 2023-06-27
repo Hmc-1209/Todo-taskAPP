@@ -40,6 +40,11 @@ const repoNameLegal = (new_name) => {
   return name.find((name) => name === new_name) ? 0 : 1;
 };
 
+export const setNote = (selectedRepo, editingItem) => {
+  const new_task_note = document.getElementById("selectedItem").value;
+  changeTaskNote(selectedRepo, editingItem, new_task_note);
+};
+
 const Layout = () => {
   const [repos, setRepos] = useState(getRepos());
   const [selectedRepo, setSelectedRepo] = useState(repos[0]);
@@ -100,17 +105,10 @@ const Layout = () => {
           setAlertMessage("Task name should be less then 10 letters !");
           setAlert(1);
         }
-      } else if (editing === 4) {
-        const new_task_note = document.getElementById("selectedItem").value;
-        if (new_task_note.length <= 500) {
-          changeTaskNote(selectedRepo, editingItem, new_task_note);
-        } else if (new_task_note > 500) {
-          setAlertMessage("Task name should be less then 500 letters !");
-          setAlert(1);
-        }
       }
+
       // Reseting click detect
-      if (editing !== 0 && editing !== 5) {
+      if (editing !== 0 && editing !== 5 && editing !== 4) {
         setReRender(reRender + 1);
         setEditingItem(null);
         setEditingType(null);
